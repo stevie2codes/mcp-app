@@ -74,21 +74,15 @@ export function App() {
   }, [reportData]);
 
   if (error) {
-    return (
-      <main className="main">
-        <ErrorState message={`Connection error: ${error.message}`} />
-      </main>
-    );
+    return <ErrorState message={`Connection error: ${error.message}`} />;
   }
 
+  const safeArea = hostContext?.safeAreaInsets;
+
   return (
-    <main
-      className="main"
+    <div
       style={{
-        paddingTop: hostContext?.safeAreaInsets?.top,
-        paddingRight: hostContext?.safeAreaInsets?.right,
-        paddingBottom: hostContext?.safeAreaInsets?.bottom,
-        paddingLeft: hostContext?.safeAreaInsets?.left,
+        padding: `${safeArea?.top ?? 0}px ${safeArea?.right ?? 0}px ${safeArea?.bottom ?? 0}px ${safeArea?.left ?? 0}px`,
       }}
     >
       {status === "loading" && <LoadingState />}
@@ -102,28 +96,32 @@ export function App() {
       )}
 
       {status === "ready" && reportData && (
-        <div className="report-entrance">
-          <ReportHeader
-            title={reportData.title}
-            domain={reportData.domain}
-            datasetId={reportData.datasetId}
-            totalRows={reportData.totalRows}
-            query={reportData.query}
-          />
-          <ReportToolbar
-            searchText={searchText}
-            onSearchChange={setSearchText}
-            onExportCsv={handleExportCsv}
-            onExportHtml={handleExportHtml}
-          />
-          <ReportGrid
-            columns={reportData.columns}
-            rowData={reportData.data}
-            quickFilterText={searchText}
-            onGridReady={handleGridReady}
-          />
+        <div className="report-card report-entrance">
+          <div className="card-body">
+            <ReportHeader
+              title={reportData.title}
+              domain={reportData.domain}
+              datasetId={reportData.datasetId}
+              totalRows={reportData.totalRows}
+              query={reportData.query}
+            />
+            <ReportToolbar
+              searchText={searchText}
+              onSearchChange={setSearchText}
+              onExportCsv={handleExportCsv}
+              onExportHtml={handleExportHtml}
+            />
+          </div>
+          <div className="card-grid">
+            <ReportGrid
+              columns={reportData.columns}
+              rowData={reportData.data}
+              quickFilterText={searchText}
+              onGridReady={handleGridReady}
+            />
+          </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

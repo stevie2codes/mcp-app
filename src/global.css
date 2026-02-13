@@ -8,7 +8,7 @@ html, body {
   font-family: var(--forge-typography-font-family, var(--font-sans, system-ui, -apple-system, sans-serif));
   font-size: 14px;
   color: var(--forge-theme-text-high, var(--color-text-primary, #1a1a1a));
-  background: var(--forge-theme-surface, var(--color-background-primary, #ffffff));
+  background: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -18,7 +18,7 @@ html, body {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;

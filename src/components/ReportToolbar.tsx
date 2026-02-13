@@ -21,16 +21,16 @@ export function ReportToolbar({
   );
 
   return (
-    <forge-toolbar className="report-toolbar">
+    <div className="report-toolbar-row">
       <forge-text-field className="search-field" dense>
         <input
           type="text"
-          placeholder="Search across all columns..."
+          placeholder="Search all columns..."
           value={searchText}
           onInput={handleInput}
         />
       </forge-text-field>
-      <div className="toolbar-actions" slot="end">
+      <div className="toolbar-actions">
         <forge-button variant="outlined" dense onClick={onExportCsv}>
           Export CSV
         </forge-button>
@@ -38,6 +38,6 @@ export function ReportToolbar({
           Export HTML
         </forge-button>
       </div>
-    </forge-toolbar>
+    </div>
   );
 }

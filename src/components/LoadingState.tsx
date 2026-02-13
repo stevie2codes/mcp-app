@@ -1,19 +1,18 @@
 export function LoadingState() {
   return (
-    <div className="loading">
-      {/* Skeleton header mimicking final layout */}
-      <div className="loading-header">
-        <div className="loading-title-bar" />
-        <div className="loading-meta-bar" />
+    <div className="loading-card">
+      <div className="loading-body">
+        <div className="loading-header">
+          <div className="loading-title-bar" />
+          <div className="loading-meta-bar" />
+        </div>
+
+        <div className="loading-progress-area">
+          <forge-linear-progress indeterminate />
+          <p className="loading-label">Fetching report data</p>
+        </div>
       </div>
 
-      {/* Progress */}
-      <div className="loading-progress-area">
-        <forge-linear-progress indeterminate />
-        <p className="loading-label">Fetching report data</p>
-      </div>
-
-      {/* Skeleton grid preview */}
       <div className="loading-skeleton-grid">
         <div className="skeleton-header-row">
           {Array.from({ length: 5 }, (_, i) => (

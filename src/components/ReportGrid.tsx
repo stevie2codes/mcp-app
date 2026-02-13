@@ -54,22 +54,20 @@ export function ReportGrid({
   );
 
   return (
-    <div className="grid-container">
-      <div className="ag-theme-quartz">
-        <AgGridReact
-          ref={gridRef}
-          columnDefs={columnDefs}
-          rowData={rowData}
-          defaultColDef={defaultColDef}
-          pagination={true}
-          paginationPageSize={50}
-          paginationPageSizeSelector={[25, 50, 100, 200]}
-          domLayout="autoHeight"
-          quickFilterText={quickFilterText}
-          onGridReady={handleGridReady}
-          animateRows={true}
-        />
-      </div>
+    <div className="ag-theme-quartz">
+      <AgGridReact
+        ref={gridRef}
+        columnDefs={columnDefs}
+        rowData={rowData}
+        defaultColDef={defaultColDef}
+        pagination={true}
+        paginationPageSize={50}
+        paginationPageSizeSelector={[25, 50, 100, 200]}
+        domLayout="autoHeight"
+        quickFilterText={quickFilterText}
+        onGridReady={handleGridReady}
+        animateRows={true}
+      />
     </div>
   );
 }

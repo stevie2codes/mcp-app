@@ -4,8 +4,8 @@ interface ErrorStateProps {
 
 export function ErrorState({ message }: ErrorStateProps) {
   return (
-    <div className="error-container">
-      <div className="error-card">
+    <div className="error-card">
+      <div className="error-inner">
         <svg
           className="error-icon"
           viewBox="0 0 20 20"
