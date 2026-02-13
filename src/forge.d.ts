@@ -45,11 +45,80 @@ declare module "react" {
       "forge-icon": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement> & {
           name?: string;
+          external?: boolean;
+          src?: string;
+        },
+        HTMLElement
+      >;
+      "forge-icon-button": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          variant?: "icon" | "outlined" | "tonal" | "filled" | "raised";
+          density?: "small" | "medium" | "large";
+          shape?: "circular" | "squared";
+          toggle?: boolean;
+          pressed?: boolean;
         },
         HTMLElement
       >;
       "forge-skeleton": React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
+        React.HTMLAttributes<HTMLElement> & {
+          text?: boolean;
+          avatar?: boolean;
+          button?: boolean;
+          chip?: boolean;
+          stretch?: boolean;
+          "form-field"?: boolean;
+          "list-item"?: boolean;
+        },
+        HTMLElement
+      >;
+      "forge-divider": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          vertical?: boolean;
+        },
+        HTMLElement
+      >;
+      "forge-badge": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          theme?:
+            | "primary"
+            | "secondary"
+            | "tertiary"
+            | "success"
+            | "warning"
+            | "error"
+            | "info"
+            | "info-primary"
+            | "info-secondary"
+            | "danger"
+            | "default";
+          dot?: boolean;
+          strong?: boolean;
+        },
+        HTMLElement
+      >;
+      "forge-tooltip": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          anchor?: string;
+          placement?: string;
+          delay?: number;
+          type?: "presentation" | "label" | "description";
+        },
+        HTMLElement
+      >;
+      "forge-inline-message": React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          theme?:
+            | "primary"
+            | "secondary"
+            | "tertiary"
+            | "success"
+            | "warning"
+            | "error"
+            | "info"
+            | "info-secondary"
+            | "danger";
+        },
         HTMLElement
       >;
     }

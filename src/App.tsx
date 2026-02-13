@@ -1,12 +1,10 @@
-import { useApp } from "@modelcontextprotocol/ext-apps/react";
 import {
-  applyDocumentTheme,
-  applyHostFonts,
-  applyHostStyleVariables,
-  type McpUiHostContext,
-} from "@modelcontextprotocol/ext-apps";
+  useApp,
+  useHostStyles,
+} from "@modelcontextprotocol/ext-apps/react";
+import type { McpUiHostContext } from "@modelcontextprotocol/ext-apps";
 import type { GridApi } from "ag-grid-community";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { ReportHeader } from "./components/ReportHeader";
 import { ReportToolbar } from "./components/ReportToolbar";
@@ -31,9 +29,6 @@ export function App() {
 
       app.onhostcontextchanged = (ctx) => {
         setHostContext((prev) => ({ ...prev, ...ctx }));
-        if (ctx.theme) applyDocumentTheme(ctx.theme);
-        if (ctx.styles?.variables) applyHostStyleVariables(ctx.styles.variables);
-        if (ctx.styles?.css?.fonts) applyHostFonts(ctx.styles.css.fonts);
       };
 
       app.onteardown = async () => {
@@ -43,18 +38,8 @@ export function App() {
     },
   });
 
-  useEffect(() => {
-    if (app) {
-      const ctx = app.getHostContext();
-      if (ctx) {
-        setHostContext(ctx);
-        if (ctx.theme) applyDocumentTheme(ctx.theme);
-        if (ctx.styles?.variables)
-          applyHostStyleVariables(ctx.styles.variables);
-        if (ctx.styles?.css?.fonts) applyHostFonts(ctx.styles.css.fonts);
-      }
-    }
-  }, [app]);
+  // SDK hook handles all host styling: CSS variables, theme (color-scheme), and fonts
+  useHostStyles(app, app?.getHostContext());
 
   const handleGridReady = useCallback((api: GridApi) => {
     gridApiRef.current = api;

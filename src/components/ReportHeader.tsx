@@ -23,9 +23,9 @@ export function ReportHeader({
           {datasetId}
         </span>
         <span className="report-byline-dot">&middot;</span>
-        <span className="report-row-count">
+        <forge-badge theme="info-primary">
           {totalRows.toLocaleString()} rows
-        </span>
+        </forge-badge>
         <span className="report-byline-dot">&middot;</span>
         <span className="report-byline-query" title={query}>
           {query}

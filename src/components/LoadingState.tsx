@@ -3,8 +3,25 @@ export function LoadingState() {
     <div className="loading-card">
       <div className="loading-body">
         <div className="loading-header">
-          <div className="loading-title-bar" />
-          <div className="loading-meta-bar" />
+          <forge-skeleton
+            text
+            style={
+              {
+                "--forge-skeleton-width": "240px",
+                "--forge-skeleton-height": "18px",
+              } as React.CSSProperties
+            }
+          />
+          <forge-skeleton
+            text
+            style={
+              {
+                "--forge-skeleton-width": "70%",
+                "--forge-skeleton-height": "12px",
+                marginTop: "10px",
+              } as React.CSSProperties
+            }
+          />
         </div>
 
         <div className="loading-progress-area">

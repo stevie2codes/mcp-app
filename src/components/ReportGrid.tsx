@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import type { ColDef, GridApi, GridReadyEvent } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
+import "ag-grid-community/styles/ag-theme-balham.css";
 
 import type { ReportColumn } from "../hooks/useReportData";
 
@@ -54,7 +54,7 @@ export function ReportGrid({
   );
 
   return (
-    <div className="ag-theme-quartz">
+    <div className="ag-theme-balham">
       <AgGridReact
         ref={gridRef}
         columnDefs={columnDefs}
