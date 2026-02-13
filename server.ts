@@ -38,9 +38,11 @@ async function fetchSocrataData(
   const url = new URL(`https://${domain}/resource/${datasetId}.json`);
 
   if (query) {
-    url.searchParams.set("$query", query);
-  }
-  if (limit) {
+    // Socrata requires LIMIT inside $query — separate $limit param is not allowed alongside $query
+    const hasLimit = /\bLIMIT\b/i.test(query);
+    const fullQuery = hasLimit ? query : `${query} LIMIT ${limit ?? 1000}`;
+    url.searchParams.set("$query", fullQuery);
+  } else if (limit) {
     url.searchParams.set("$limit", String(limit));
   }
 
