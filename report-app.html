@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Socrata Report</title>
+</head>
+<body>
+  <main class="main">
+    <div class="report-header" id="report-header" style="display: none;">
+      <h1 id="report-title">Report</h1>
+      <p class="report-meta" id="report-meta"></p>
+    </div>
+
+    <div class="toolbar" id="toolbar" style="display: none;">
+      <input
+        type="text"
+        id="quick-filter"
+        placeholder="Search across all columns..."
+        class="quick-filter-input"
+      />
+      <div class="toolbar-actions">
+        <button id="export-csv-btn" class="btn btn-secondary">Export CSV</button>
+        <button id="export-html-btn" class="btn btn-secondary">Export HTML</button>
+      </div>
+    </div>
+
+    <div id="loading" class="loading">
+      <p>Waiting for report data...</p>
+    </div>
+
+    <div id="grid-container" class="grid-container" style="display: none;">
+      <div id="report-grid" class="ag-theme-quartz"></div>
+    </div>
+  </main>
+  <script type="module" src="/src/report-app.ts"></script>
+</body>
+</html>

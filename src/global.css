@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  font-size: 14px;
+  color: var(--color-text-primary, #1a1a1a);
+  background: var(--color-background-primary, #ffffff);
+}
