@@ -81,10 +81,6 @@ export function App() {
     );
   }
 
-  const meta = reportData
-    ? `${reportData.domain} / ${reportData.datasetId} \u00b7 ${reportData.totalRows.toLocaleString()} rows \u00b7 Query: ${reportData.query}`
-    : "";
-
   return (
     <main
       className="main"
@@ -106,8 +102,14 @@ export function App() {
       )}
 
       {status === "ready" && reportData && (
-        <>
-          <ReportHeader title={reportData.title} meta={meta} />
+        <div className="report-entrance">
+          <ReportHeader
+            title={reportData.title}
+            domain={reportData.domain}
+            datasetId={reportData.datasetId}
+            totalRows={reportData.totalRows}
+            query={reportData.query}
+          />
           <ReportToolbar
             searchText={searchText}
             onSearchChange={setSearchText}
@@ -120,7 +122,7 @@ export function App() {
             quickFilterText={searchText}
             onGridReady={handleGridReady}
           />
-        </>
+        </div>
       )}
     </main>
   );

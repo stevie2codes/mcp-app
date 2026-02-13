@@ -9,4 +9,39 @@ html, body {
   font-size: 14px;
   color: var(--forge-theme-text-high, var(--color-text-primary, #1a1a1a));
   background: var(--forge-theme-surface, var(--color-background-primary, #ffffff));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Animation keyframes ── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes pulseBar {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.15; }
+}
+
+@keyframes accentSlide {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }

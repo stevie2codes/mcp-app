@@ -55,7 +55,7 @@ export function ReportGrid({
 
   return (
     <div className="grid-container">
-      <div className="ag-theme-quartz" style={{ width: "100%", height: 500 }}>
+      <div className="ag-theme-quartz">
         <AgGridReact
           ref={gridRef}
           columnDefs={columnDefs}
@@ -67,6 +67,7 @@ export function ReportGrid({
           domLayout="autoHeight"
           quickFilterText={quickFilterText}
           onGridReady={handleGridReady}
+          animateRows={true}
         />
       </div>
     </div>
