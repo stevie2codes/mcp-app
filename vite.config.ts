@@ -1,3 +1,4 @@
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { viteSingleFile } from "vite-plugin-singlefile";
 
@@ -9,7 +10,7 @@ if (!INPUT) {
 const isDevelopment = process.env.NODE_ENV === "development";
 
 export default defineConfig({
-  plugins: [viteSingleFile()],
+  plugins: [react(), viteSingleFile()],
   build: {
     sourcemap: isDevelopment ? "inline" : undefined,
     cssMinify: !isDevelopment,

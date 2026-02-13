@@ -13,11 +13,18 @@
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "^1.0.0",
     "@modelcontextprotocol/sdk": "^1.24.0",
+    "@tylertech/forge": "^3.13.1",
     "ag-grid-community": "^35.1.0",
+    "ag-grid-react": "^35.1.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "zod": "^4.1.13"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.4",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
     "tsx": "^4.19.0",
