@@ -7,10 +7,11 @@ Ask Claude something like *"Show me Chicago crime data from 2024"* and get back 
 ## Features
 
 - **Interactive data tables** powered by AG Grid Community (sort, filter, resize, reorder columns)
+- **Report templates** — branded operational headers (agency name, logo, subtitle, date) for government/enterprise output
 - **Quick search** across all columns
 - **Pagination** with configurable page sizes (25, 50, 100, 200)
 - **Export CSV** — downloads the current filtered/sorted view
-- **Export HTML** — snapshots the report as a self-contained HTML file
+- **Export HTML** — snapshots the report as a self-contained HTML file, including branded headers when a template is applied
 - **Host theme integration** — adapts to light/dark mode automatically
 
 ## How It Works
@@ -92,6 +93,55 @@ Claude will call the `generate_report` tool and the interactive table will appea
 | `query` | No | SoQL query (e.g. `SELECT * WHERE year = 2024`) |
 | `columns` | No | Subset of columns to display |
 | `limit` | No | Max rows to fetch (default: 1000) |
+| `templateId` | No | Template ID for branded header (e.g. `federal-standard`) |
+| `templateOverrides` | No | Override template fields inline (agencyName, logoUrl, subtitle, colors, etc.) |
+
+### The `list_templates` tool
+
+Returns the available report templates by name and ID. No parameters. Claude calls this to discover which templates are available before generating a report.
+
+## Report Templates
+
+Templates are JSON files in the `templates/` directory that add branded headers to reports — useful for operational, government, or enterprise reporting where a standardized format is required.
+
+### Built-in templates
+
+| Template | ID | Style |
+|----------|----|-------|
+| Federal Standard Report | `federal-standard` | U.S. federal agency (navy/red) |
+| Municipal Data Report | `municipal-report` | City/county government (blue/green) |
+| Blank Starter | `blank-starter` | Empty — copy and customize |
+
+### Creating a custom template
+
+1. Copy `templates/blank-starter.json` to a new file (e.g. `templates/my-agency.json`)
+2. Fill in the fields:
+
+```json
+{
+  "id": "my-agency",
+  "name": "My Agency Report",
+  "header": {
+    "agencyName": "Department of Public Works",
+    "logoUrl": "https://example.gov/logo.png",
+    "subtitle": "Data Analytics Division",
+    "showDate": true,
+    "showReportPeriod": false
+  },
+  "style": {
+    "primaryColor": "#1a5276",
+    "accentColor": "#27ae60"
+  }
+}
+```
+
+3. Rebuild (`npm run build`) and restart Claude Desktop
+
+### Example prompts
+
+- *"List the available report templates"*
+- *"Show me Chicago crime data using the federal standard template"*
+- *"Generate an NYC 311 report with the municipal template, but change the agency name to NYC Office of Data Analytics"*
 
 ## Development
 
@@ -107,13 +157,30 @@ npm run dev
 
 ```
 mcp-app/
-├── server.ts              # MCP server: tool registration, Socrata API calls, resource serving
+├── server.ts              # MCP server: generate_report + list_templates tools
 ├── main.ts                # Entry point (stdio transport)
+├── template-loader.ts     # Reads and validates template JSON files
+├── templates/             # User-configurable report templates
+│   ├── federal-standard.json
+│   ├── municipal-report.json
+│   └── blank-starter.json
 ├── report-app.html        # HTML shell for the MCP App UI
 ├── src/
-│   ├── report-app.ts      # AG Grid setup, export logic, MCP App bridge
-│   ├── report-app.css     # Report styles
-│   └── global.css         # Base styles
+│   ├── App.tsx            # Main React component
+│   ├── components/
+│   │   ├── TemplateHeader.tsx  # Branded header block
+│   │   ├── ReportHeader.tsx    # Report title + source info
+│   │   ├── ReportToolbar.tsx   # Search + export buttons
+│   │   └── ReportGrid.tsx      # AG Grid table
+│   ├── hooks/
+│   │   └── useReportData.ts    # MCP App SDK bridge
+│   ├── lib/
+│   │   ├── export-html.ts      # HTML export with template support
+│   │   └── forge-theme-bridge.css
+│   ├── types/
+│   │   └── template.ts         # Zod schema + TypeScript types
+│   ├── report-app.css
+│   └── global.css
 ├── vite.config.ts         # Bundles UI into single HTML file
 ├── tsconfig.json          # Client-side TypeScript config
 ├── tsconfig.server.json   # Server-side TypeScript config
@@ -123,7 +190,10 @@ mcp-app/
 ## Tech Stack
 
 - [MCP Apps SDK](https://github.com/modelcontextprotocol/ext-apps) — interactive UI inside MCP hosts
+- [React 19](https://react.dev/) — UI framework
 - [AG Grid Community](https://www.ag-grid.com/) — data table with sort, filter, pagination
+- [Tyler Forge](https://forge.tylertech.com/) — web components (buttons, text fields, badges, tooltips)
+- [Zod](https://zod.dev/) — schema validation for templates and tool inputs
 - [Vite](https://vitejs.dev/) + [vite-plugin-singlefile](https://github.com/nicccce/vite-plugin-singlefile) — bundles UI into single HTML
 - [Socrata SODA API](https://dev.socrata.com/) — public open data
 

@@ -1,0 +1,9 @@
+{
+  "id": "blank-starter",
+  "name": "Blank Starter",
+  "header": {
+    "agencyName": "",
+    "showDate": true,
+    "showReportPeriod": false
+  }
+}

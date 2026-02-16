@@ -9,6 +9,7 @@ import { useCallback, useRef, useState } from "react";
 import { ReportHeader } from "./components/ReportHeader";
 import { ReportToolbar } from "./components/ReportToolbar";
 import { ReportGrid } from "./components/ReportGrid";
+import { TemplateHeader } from "./components/TemplateHeader";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { useReportData } from "./hooks/useReportData";
@@ -55,7 +56,7 @@ export function App() {
   const handleExportHtml = useCallback(() => {
     if (!gridApiRef.current || !reportData) return;
     const meta = `${reportData.domain} / ${reportData.datasetId} \u00b7 ${reportData.totalRows.toLocaleString()} rows \u00b7 Query: ${reportData.query}`;
-    exportHtml(gridApiRef.current, reportData.title, meta);
+    exportHtml(gridApiRef.current, reportData.title, meta, reportData.template);
   }, [reportData]);
 
   if (error) {
@@ -82,6 +83,9 @@ export function App() {
 
       {status === "ready" && reportData && (
         <div className="report-card report-entrance">
+          {reportData.template && (
+            <TemplateHeader template={reportData.template} />
+          )}
           <div className="card-body">
             <ReportHeader
               title={reportData.title}

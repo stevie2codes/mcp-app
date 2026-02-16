@@ -1,0 +1,14 @@
+{
+  "id": "municipal-report",
+  "name": "Municipal Data Report",
+  "header": {
+    "agencyName": "City Data Office",
+    "subtitle": "Open Data Initiative",
+    "showDate": true,
+    "showReportPeriod": false
+  },
+  "style": {
+    "primaryColor": "#1a5276",
+    "accentColor": "#27ae60"
+  }
+}

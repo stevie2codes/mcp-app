@@ -12,6 +12,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
+import { listTemplates, loadTemplate } from "./template-loader.js";
+import type { Template } from "./src/types/template.js";
 
 // Works both from source (server.ts) and compiled (dist/server.js)
 const __filename = fileURLToPath(import.meta.url);
@@ -130,6 +132,26 @@ export function createServer(): McpServer {
           .optional()
           .default(1000)
           .describe("Maximum number of rows to fetch (default: 1000)"),
+        templateId: z
+          .string()
+          .optional()
+          .describe(
+            'Optional template ID for branded report header, e.g. "federal-standard". Use list_templates to see available options.',
+          ),
+        templateOverrides: z
+          .object({
+            agencyName: z.string().optional(),
+            logoUrl: z.string().optional(),
+            subtitle: z.string().optional(),
+            showDate: z.boolean().optional(),
+            showReportPeriod: z.boolean().optional(),
+            primaryColor: z.string().optional(),
+            accentColor: z.string().optional(),
+          })
+          .optional()
+          .describe(
+            "Optional overrides for the template header. Applied on top of the base template if templateId is provided, or used standalone.",
+          ),
       },
       _meta: { ui: { resourceUri } },
     },
@@ -140,8 +162,95 @@ export function createServer(): McpServer {
       query?: string;
       columns?: string[];
       limit?: number;
+      templateId?: string;
+      templateOverrides?: {
+        agencyName?: string;
+        logoUrl?: string;
+        subtitle?: string;
+        showDate?: boolean;
+        showReportPeriod?: boolean;
+        primaryColor?: string;
+        accentColor?: string;
+      };
     }): Promise<CallToolResult> => {
-      const { domain, datasetId, title, query, columns, limit = 1000 } = args;
+      const {
+        domain,
+        datasetId,
+        title,
+        query,
+        columns,
+        limit = 1000,
+        templateId,
+        templateOverrides,
+      } = args;
+
+      // Resolve template
+      let resolvedTemplate: Template | undefined;
+      if (templateId) {
+        const loaded = await loadTemplate(templateId);
+        if (!loaded) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error: Template "${templateId}" not found. Use list_templates to see available templates.`,
+              },
+            ],
+            isError: true,
+          };
+        }
+        resolvedTemplate = loaded;
+      }
+
+      // Apply overrides
+      if (templateOverrides && resolvedTemplate) {
+        resolvedTemplate = {
+          ...resolvedTemplate,
+          header: {
+            ...resolvedTemplate.header,
+            ...(templateOverrides.agencyName !== undefined && {
+              agencyName: templateOverrides.agencyName,
+            }),
+            ...(templateOverrides.logoUrl !== undefined && {
+              logoUrl: templateOverrides.logoUrl,
+            }),
+            ...(templateOverrides.subtitle !== undefined && {
+              subtitle: templateOverrides.subtitle,
+            }),
+            ...(templateOverrides.showDate !== undefined && {
+              showDate: templateOverrides.showDate,
+            }),
+            ...(templateOverrides.showReportPeriod !== undefined && {
+              showReportPeriod: templateOverrides.showReportPeriod,
+            }),
+          },
+          style: {
+            ...resolvedTemplate.style,
+            ...(templateOverrides.primaryColor !== undefined && {
+              primaryColor: templateOverrides.primaryColor,
+            }),
+            ...(templateOverrides.accentColor !== undefined && {
+              accentColor: templateOverrides.accentColor,
+            }),
+          },
+        };
+      } else if (templateOverrides && !resolvedTemplate) {
+        resolvedTemplate = {
+          id: "custom",
+          name: "Custom",
+          header: {
+            agencyName: templateOverrides.agencyName ?? "",
+            logoUrl: templateOverrides.logoUrl,
+            subtitle: templateOverrides.subtitle,
+            showDate: templateOverrides.showDate ?? true,
+            showReportPeriod: templateOverrides.showReportPeriod ?? false,
+          },
+          style: {
+            primaryColor: templateOverrides.primaryColor,
+            accentColor: templateOverrides.accentColor,
+          },
+        };
+      }
 
       try {
         const data = await fetchSocrataData(domain, datasetId, query, limit);
@@ -155,6 +264,7 @@ export function createServer(): McpServer {
           data,
           totalRows: data.length,
           query: query ?? `SELECT * LIMIT ${limit}`,
+          ...(resolvedTemplate && { template: resolvedTemplate }),
         };
 
         return {
@@ -190,6 +300,34 @@ export function createServer(): McpServer {
       return {
         contents: [
           { uri: resourceUri, mimeType: RESOURCE_MIME_TYPE, text: html },
+        ],
+      };
+    },
+  );
+
+  server.registerTool(
+    "list_templates",
+    {
+      title: "List Report Templates",
+      description:
+        "Lists available report templates. Returns template IDs and names that can be passed to generate_report's templateId parameter.",
+    },
+    async (): Promise<CallToolResult> => {
+      const templates = await listTemplates();
+      if (templates.length === 0) {
+        return {
+          content: [{ type: "text", text: "No templates found." }],
+        };
+      }
+      const lines = templates
+        .map((t) => `- **${t.name}** (id: \`${t.id}\`)`)
+        .join("\n");
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Available report templates:\n\n${lines}`,
+          },
         ],
       };
     },

@@ -13,5 +13,5 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["server.ts", "main.ts"]
+  "include": ["server.ts", "main.ts", "template-loader.ts", "src/types/template.ts"]
 }

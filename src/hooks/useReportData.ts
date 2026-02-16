@@ -1,6 +1,7 @@
 import type { App } from "@modelcontextprotocol/ext-apps";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { useCallback, useState } from "react";
+import type { Template } from "../types/template";
 
 export interface ReportColumn {
   field: string;
@@ -15,6 +16,7 @@ export interface ReportData {
   data: Record<string, unknown>[];
   totalRows: number;
   query: string;
+  template?: Template;
 }
 
 export type ReportStatus = "loading" | "ready" | "error" | "cancelled";

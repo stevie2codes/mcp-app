@@ -1,0 +1,14 @@
+{
+  "id": "federal-standard",
+  "name": "Federal Standard Report",
+  "header": {
+    "agencyName": "U.S. Department of Transportation",
+    "subtitle": "Office of Data Analytics",
+    "showDate": true,
+    "showReportPeriod": true
+  },
+  "style": {
+    "primaryColor": "#003366",
+    "accentColor": "#B22234"
+  }
+}
