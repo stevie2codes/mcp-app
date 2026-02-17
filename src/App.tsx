@@ -12,12 +12,20 @@ import { ReportGrid } from "./components/ReportGrid";
 import { TemplateHeader } from "./components/TemplateHeader";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
+import { PreviewScreen } from "./components/PreviewScreen";
 import { useReportData } from "./hooks/useReportData";
 import { exportHtml } from "./lib/export-html";
 
 export function App() {
-  const { status, reportData, errorMessage, registerHandlers } =
-    useReportData();
+  const {
+    status,
+    reportData,
+    errorMessage,
+    selection,
+    registerHandlers,
+    onSelectTemplate,
+    onConfirmTemplate,
+  } = useReportData();
   const [searchText, setSearchText] = useState("");
   const [hostContext, setHostContext] = useState<McpUiHostContext | undefined>();
   const gridApiRef = useRef<GridApi | null>(null);
@@ -79,6 +87,15 @@ export function App() {
 
       {status === "cancelled" && errorMessage && (
         <ErrorState message={errorMessage} />
+      )}
+
+      {status === "preview" && reportData && (
+        <PreviewScreen
+          reportData={reportData}
+          selection={selection}
+          onSelect={onSelectTemplate}
+          onConfirm={onConfirmTemplate}
+        />
       )}
 
       {status === "ready" && reportData && (

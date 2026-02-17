@@ -20,6 +20,26 @@ export async function loadTemplate(id: string): Promise<Template | null> {
   }
 }
 
+export async function loadAllTemplates(): Promise<Template[]> {
+  try {
+    const files = await fs.readdir(TEMPLATES_DIR);
+    const templates: Template[] = [];
+    for (const file of files) {
+      if (!file.endsWith(".json")) continue;
+      try {
+        const raw = await fs.readFile(path.join(TEMPLATES_DIR, file), "utf-8");
+        const parsed = TemplateSchema.parse(JSON.parse(raw));
+        templates.push(parsed);
+      } catch {
+        // Skip invalid template files
+      }
+    }
+    return templates;
+  } catch {
+    return [];
+  }
+}
+
 export async function listTemplates(): Promise<{ id: string; name: string }[]> {
   try {
     const files = await fs.readdir(TEMPLATES_DIR);

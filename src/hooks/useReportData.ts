@@ -17,14 +17,26 @@ export interface ReportData {
   totalRows: number;
   query: string;
   template?: Template;
+  availableTemplates?: Template[];
 }
 
-export type ReportStatus = "loading" | "ready" | "error" | "cancelled";
+export type TemplateSelection =
+  | { kind: "none" }
+  | { kind: "no-template" }
+  | { kind: "template"; value: Template };
+
+export type ReportStatus =
+  | "loading"
+  | "preview"
+  | "ready"
+  | "error"
+  | "cancelled";
 
 interface ReportState {
   status: ReportStatus;
   reportData: ReportData | null;
   errorMessage: string | null;
+  selection: TemplateSelection;
 }
 
 function escapeHtml(str: string): string {
@@ -40,7 +52,33 @@ export function useReportData() {
     status: "loading",
     reportData: null,
     errorMessage: null,
+    selection: { kind: "none" },
   });
+
+  const handleSelectTemplate = useCallback(
+    (selection: TemplateSelection) => {
+      setState((prev) => ({ ...prev, selection }));
+    },
+    [],
+  );
+
+  const handleConfirmTemplate = useCallback(() => {
+    setState((prev) => {
+      if (!prev.reportData || prev.selection.kind === "none") return prev;
+      return {
+        ...prev,
+        status: "ready" as const,
+        reportData: {
+          ...prev.reportData,
+          template:
+            prev.selection.kind === "template"
+              ? prev.selection.value
+              : undefined,
+        },
+        selection: { kind: "none" },
+      };
+    });
+  }, []);
 
   const registerHandlers = useCallback((app: App) => {
     app.ontoolinput = (params) => {
@@ -54,10 +92,15 @@ export function useReportData() {
         | undefined;
 
       if (structured?.data) {
+        const goToPreview =
+          Array.isArray(structured.availableTemplates) &&
+          structured.availableTemplates.length > 0;
+
         setState({
-          status: "ready",
+          status: goToPreview ? "preview" : "ready",
           reportData: structured,
           errorMessage: null,
+          selection: goToPreview ? { kind: "no-template" } : { kind: "none" },
         });
       } else {
         setState({
@@ -65,6 +108,7 @@ export function useReportData() {
           reportData: null,
           errorMessage:
             "No data returned. The query may have returned empty results or an error occurred.",
+          selection: { kind: "none" },
         });
       }
     };
@@ -74,6 +118,7 @@ export function useReportData() {
         status: "cancelled",
         reportData: null,
         errorMessage: "Report generation was cancelled.",
+        selection: { kind: "none" },
       });
     };
 
@@ -83,9 +128,15 @@ export function useReportData() {
         status: "error",
         reportData: null,
         errorMessage: `Error: ${escapeHtml(String(error))}`,
+        selection: { kind: "none" },
       });
     };
   }, []);
 
-  return { ...state, registerHandlers };
+  return {
+    ...state,
+    registerHandlers,
+    onSelectTemplate: handleSelectTemplate,
+    onConfirmTemplate: handleConfirmTemplate,
+  };
 }

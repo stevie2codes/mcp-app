@@ -12,7 +12,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "zod";
-import { listTemplates, loadTemplate } from "./template-loader.js";
+import {
+  listTemplates,
+  loadAllTemplates,
+  loadTemplate,
+} from "./template-loader.js";
 import type { Template } from "./src/types/template.js";
 
 // Works both from source (server.ts) and compiled (dist/server.js)
@@ -265,6 +269,9 @@ export function createServer(): McpServer {
           totalRows: data.length,
           query: query ?? `SELECT * LIMIT ${limit}`,
           ...(resolvedTemplate && { template: resolvedTemplate }),
+          ...(!resolvedTemplate && {
+            availableTemplates: await loadAllTemplates(),
+          }),
         };
 
         return {
